@@ -1,7 +1,6 @@
 // Variables globales
 let filesNeeded = 0;
 let filesTotal = 0;
-let musicPlaying = false;
 
 // Fonction appelée par GMod lors du chargement
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
@@ -29,7 +28,7 @@ function DownloadingFile(fileName) {
         : fileName;
     
     statusMessage.textContent = `Téléchargement : ${shortFileName}`;
-    
+    A
     console.log('Téléchargement du fichier:', fileName);
 }
 
@@ -109,14 +108,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Charger la configuration
     loadConfiguration();
     
-    // Charger les fondateurs
-    loadFounders();
-    
     // Charger les règles depuis la config
     loadRules();
     
-    // Initialiser la musique
-    initMusic();
+    // Musique de fond (si activée)
+    const bgMusic = document.getElementById('bgMusic');
+    if (bgMusic && CONFIG.enableMusic) {
+        bgMusic.volume = CONFIG.musicVolume;
+        // Tenter de jouer la musique (peut être bloqué par le navigateur)
+        bgMusic.play().catch(e => {
+            console.log('Lecture audio bloquée par le navigateur');
+        });
+    }
     
     // Animation du logo
     animateLogo();
@@ -144,34 +147,6 @@ function loadConfiguration() {
     }
 }
 
-// Charger les fondateurs
-function loadFounders() {
-    const foundersList = document.getElementById('foundersList');
-    
-    if (typeof CONFIG !== 'undefined' && CONFIG.founders && CONFIG.founders.length > 0) {
-        foundersList.innerHTML = '';
-        CONFIG.founders.forEach(founder => {
-            const founderDiv = document.createElement('div');
-            founderDiv.className = 'founder-item';
-            
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'founder-name';
-            nameSpan.textContent = founder.name;
-            
-            const roleSpan = document.createElement('span');
-            roleSpan.className = 'founder-role';
-            roleSpan.textContent = founder.role || 'Fondateur';
-            
-            founderDiv.appendChild(nameSpan);
-            founderDiv.appendChild(roleSpan);
-            foundersList.appendChild(founderDiv);
-        });
-    } else {
-        // Valeurs par défaut
-        foundersList.innerHTML = '<div class="founder-item"><span class="founder-name">Fondateur 1</span><span class="founder-role">Créateur</span></div>';
-    }
-}
-
 // Charger les règles du serveur
 function loadRules() {
     const rulesList = document.getElementById('rulesList');
@@ -183,60 +158,6 @@ function loadRules() {
             li.textContent = rule;
             rulesList.appendChild(li);
         });
-    }
-}
-
-// Initialiser la musique
-function initMusic() {
-    const bgMusic = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicBtn');
-    const musicIcon = document.getElementById('musicIcon');
-    const musicText = document.getElementById('musicText');
-    
-    if (!bgMusic || !musicBtn) return;
-    
-    // Vérifier si la musique est activée dans la config
-    if (typeof CONFIG !== 'undefined' && CONFIG.enableMusic) {
-        bgMusic.volume = CONFIG.musicVolume || 0.3;
-        
-        // Bouton de contrôle de la musique
-        musicBtn.addEventListener('click', function() {
-            if (musicPlaying) {
-                // Arrêter la musique
-                bgMusic.pause();
-                musicPlaying = false;
-                musicIcon.textContent = '🔇';
-                musicText.textContent = 'Musique OFF';
-                musicBtn.classList.remove('playing');
-            } else {
-                // Jouer la musique
-                bgMusic.play().then(() => {
-                    musicPlaying = true;
-                    musicIcon.textContent = '🔊';
-                    musicText.textContent = 'Musique ON';
-                    musicBtn.classList.add('playing');
-                }).catch(e => {
-                    console.log('Impossible de jouer la musique:', e);
-                    alert('Cliquez sur le bouton pour activer la musique !');
-                });
-            }
-        });
-        
-        // Tenter de jouer automatiquement (peut être bloqué)
-        bgMusic.play().then(() => {
-            musicPlaying = true;
-            musicIcon.textContent = '🔊';
-            musicText.textContent = 'Musique ON';
-            musicBtn.classList.add('playing');
-        }).catch(e => {
-            console.log('Lecture automatique bloquée. Cliquez sur le bouton pour activer la musique.');
-        });
-    } else {
-        // Cacher le contrôle si la musique est désactivée
-        const musicControl = document.getElementById('musicControl');
-        if (musicControl) {
-            musicControl.style.display = 'none';
-        }
     }
 }
 
@@ -261,7 +182,7 @@ function simulateLoading() {
     console.log('Mode test : simulation du chargement');
     
     GameDetails(
-        CONFIG.serverName || 'Serveur de Test',
+        'Serveur de Test',
         'test.com',
         'gm_construct',
         32,
