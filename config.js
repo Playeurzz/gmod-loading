@@ -22,18 +22,13 @@ const CONFIG = {
     
     founders: [
         {
-            name: "Fondateur 1",
-            role: "Propriétaire"
+            name: "Zetrap",
+            role: "Fondateur"
         },
         {
-            name: "Fondateur 2",
-            role: "Co-Fondateur"
+            name: "Gary Novack",
+            role: "Zetrap"
         },
-        {
-            name: "Fondateur 3",
-            role: "Développeur"
-        }
-        // Ajoutez autant de fondateurs que vous voulez !
     ],
     
     
@@ -141,3 +136,4 @@ if (CONFIG.debug) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
 }
+
