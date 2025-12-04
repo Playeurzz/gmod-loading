@@ -14,45 +14,58 @@
     <!-- Conteneur principal -->
     <div class="container">
         
-        <!-- Header avec logo -->
+        <!-- Header avec logo et fondateurs -->
         <div class="header">
             <img src="images/logo.png" alt="Logo du serveur" class="logo" id="logo">
             <h1 class="server-name" id="serverName">Chargement...</h1>
-        </div>
-
-        <!-- Informations de chargement -->
-        <div class="loading-info">
-            <div class="info-card">
-                <h2 class="map-name" id="mapName">Map : Chargement...</h2>
-                <div class="steam-info">
-                    <p id="steamName">Connexion...</p>
+            
+            <!-- Section Fondateurs -->
+            <div class="founders-section">
+                <h3 class="founders-title">👑 Fondateurs</h3>
+                <div class="founders-list" id="foundersList">
+                    <!-- Sera rempli par config.js -->
                 </div>
             </div>
+        </div>
 
-            <!-- Barre de progression -->
-            <div class="progress-container">
-                <div class="progress-bar" id="progressBar">
-                    <div class="progress-shine"></div>
+        <!-- Section centrale avec infos et règles -->
+        <div class="main-content">
+            
+            <!-- Informations de chargement -->
+            <div class="loading-info">
+                <div class="info-card">
+                    <h2 class="map-name" id="mapName">Map : Chargement...</h2>
+                    <div class="steam-info">
+                        <p id="steamName">Connexion...</p>
+                    </div>
                 </div>
-                <div class="progress-text">
-                    <span id="progressPercent">0%</span>
-                    <span id="filesDownloaded">0/0 fichiers</span>
+
+                <!-- Barre de progression -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress-shine"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span id="progressPercent">0%</span>
+                        <span id="filesDownloaded">0/0 fichiers</span>
+                    </div>
                 </div>
+
+                <!-- Message de statut -->
+                <p class="status-message" id="statusMessage">Initialisation de la connexion...</p>
             </div>
 
-            <!-- Message de statut -->
-            <p class="status-message" id="statusMessage">Initialisation de la connexion...</p>
+            <!-- Règles du serveur (REPOSITIONNÉES) -->
+            <div class="rules-container">
+                <h3>📋 Règles du Serveur</h3>
+                <ul class="rules-list" id="rulesList">
+                    <li>Chargement des règles...</li>
+                </ul>
+            </div>
+
         </div>
 
-        <!-- Règles du serveur -->
-        <div class="rules-container">
-            <h3>📋 Règles du serveur</h3>
-            <ul class="rules-list" id="rulesList">
-                <li>Chargement des règles...</li>
-            </ul>
-        </div>
-
-        <!-- Footer -->
+        <!-- Footer avec contrôle musique -->
         <div class="footer">
             <p>Connexion au serveur en cours...</p>
             <div class="loading-dots">
@@ -60,14 +73,22 @@
                 <span></span>
                 <span></span>
             </div>
+            
+            <!-- Contrôle de la musique -->
+            <div class="music-control" id="musicControl">
+                <button class="music-btn" id="musicBtn">
+                    <span id="musicIcon">🔊</span>
+                    <span id="musicText">Musique</span>
+                </button>
+            </div>
         </div>
 
     </div>
 
-    <!-- Musique de fond (optionnelle) -->
-    <!-- <audio id="bgMusic" loop>
+    <!-- Musique de fond -->
+    <audio id="bgMusic" loop>
         <source src="music/background.mp3" type="audio/mpeg">
-    </audio> -->
+    </audio>
 
     <!-- Scripts -->
     <script src="config.js"></script>
