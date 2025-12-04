@@ -1,24 +1,25 @@
 // Variables globales
 let filesNeeded = 0;
 let filesTotal = 0;
+let musicPlaying = false;
 
-// Fonction appelÈe par GMod lors du chargement
+// Fonction appel√©e par GMod lors du chargement
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-    // Mise ‡ jour du nom du serveur
+    // Mise √† jour du nom du serveur
     document.getElementById('serverName').textContent = servername || CONFIG.serverName;
     
-    // Mise ‡ jour du nom de la map
+    // Mise √† jour du nom de la map
     document.getElementById('mapName').textContent = `Map : ${mapname || 'Chargement...'}`;
     
-    // Si on a un Steam ID, rÈcupÈrer le nom du joueur
+    // Si on a un Steam ID, r√©cup√©rer le nom du joueur
     if (steamid) {
         document.getElementById('steamName').textContent = `Bienvenue, joueur !`;
     }
     
-    console.log('DÈtails du jeu reÁus:', { servername, serverurl, mapname, maxplayers, steamid, gamemode });
+    console.log('D√©tails du jeu re√ßus:', { servername, serverurl, mapname, maxplayers, steamid, gamemode });
 }
 
-// Fonction appelÈe lors du tÈlÈchargement des fichiers
+// Fonction appel√©e lors du t√©l√©chargement des fichiers
 function DownloadingFile(fileName) {
     const statusMessage = document.getElementById('statusMessage');
     
@@ -27,40 +28,40 @@ function DownloadingFile(fileName) {
         ? '...' + fileName.substring(fileName.length - 47) 
         : fileName;
     
-    statusMessage.textContent = `TÈlÈchargement : ${shortFileName}`;
+    statusMessage.textContent = `T√©l√©chargement : ${shortFileName}`;
     
-    console.log('TÈlÈchargement du fichier:', fileName);
+    console.log('T√©l√©chargement du fichier:', fileName);
 }
 
-// Fonction appelÈe pour mettre ‡ jour le statut
+// Fonction appel√©e pour mettre √† jour le statut
 function SetStatusChanged(status) {
     const statusMessage = document.getElementById('statusMessage');
     
-    // Messages personnalisÈs selon le statut
+    // Messages personnalis√©s selon le statut
     const statusMessages = {
         'Sending client info...': 'Envoi des informations client...',
-        'Retrieving server info...': 'RÈcupÈration des informations du serveur...',
+        'Retrieving server info...': 'R√©cup√©ration des informations du serveur...',
         'Requesting spawn...': 'Demande d\'apparition...',
-        'Starting Lua...': 'DÈmarrage de Lua...',
+        'Starting Lua...': 'D√©marrage de Lua...',
         'Parsing game info...': 'Analyse des informations de jeu...',
-        'Workshop Complete': 'Workshop terminÈ !',
-        'Client info sent!': 'Informations envoyÈes !'
+        'Workshop Complete': 'Workshop termin√© !',
+        'Client info sent!': 'Informations envoy√©es !'
     };
     
     statusMessage.textContent = statusMessages[status] || status;
     
-    console.log('Statut changÈ:', status);
+    console.log('Statut chang√©:', status);
 }
 
-// Fonction appelÈe pour mettre ‡ jour les fichiers nÈcessaires
+// Fonction appel√©e pour mettre √† jour les fichiers n√©cessaires
 function SetFilesNeeded(needed) {
     filesNeeded = needed;
     updateProgress();
     
-    console.log('Fichiers nÈcessaires:', needed);
+    console.log('Fichiers n√©cessaires:', needed);
 }
 
-// Fonction appelÈe pour mettre ‡ jour le total de fichiers
+// Fonction appel√©e pour mettre √† jour le total de fichiers
 function SetFilesTotal(total) {
     filesTotal = total;
     updateProgress();
@@ -68,7 +69,7 @@ function SetFilesTotal(total) {
     console.log('Total de fichiers:', total);
 }
 
-// Mise ‡ jour de la barre de progression
+// Mise √† jour de la barre de progression
 function updateProgress() {
     const progressBar = document.querySelector('.progress-bar::before') || document.querySelector('.progress-bar');
     const progressPercent = document.getElementById('progressPercent');
@@ -81,10 +82,10 @@ function updateProgress() {
         percent = Math.floor((downloaded / filesTotal) * 100);
     }
     
-    // Mettre ‡ jour l'affichage
+    // Mettre √† jour l'affichage
     progressPercent.textContent = `${percent}%`;
     
-    // Mettre ‡ jour le compteur de fichiers
+    // Mettre √† jour le compteur de fichiers
     const downloaded = Math.max(0, filesTotal - filesNeeded);
     filesDownloaded.textContent = `${downloaded}/${filesTotal} fichiers`;
     
@@ -103,28 +104,24 @@ function updateProgress() {
 
 // Initialisation au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Loading screen initialisÈ');
+    console.log('Loading screen initialis√©');
     
     // Charger la configuration
     loadConfiguration();
     
-    // Charger les rËgles depuis la config
+    // Charger les fondateurs
+    loadFounders();
+    
+    // Charger les r√®gles depuis la config
     loadRules();
     
-    // Musique de fond (si activÈe)
-    const bgMusic = document.getElementById('bgMusic');
-    if (bgMusic && CONFIG.enableMusic) {
-        bgMusic.volume = CONFIG.musicVolume;
-        // Tenter de jouer la musique (peut Ítre bloquÈ par le navigateur)
-        bgMusic.play().catch(e => {
-            console.log('Lecture audio bloquÈe par le navigateur');
-        });
-    }
+    // Initialiser la musique
+    initMusic();
     
     // Animation du logo
     animateLogo();
     
-    // Simuler la progression pour les tests (‡ supprimer en production)
+    // Simuler la progression pour les tests (√† supprimer en production)
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         simulateLoading();
     }
@@ -133,21 +130,49 @@ document.addEventListener('DOMContentLoaded', function() {
 // Charger la configuration
 function loadConfiguration() {
     if (typeof CONFIG !== 'undefined') {
-        // Appliquer le nom du serveur par dÈfaut
+        // Appliquer le nom du serveur par d√©faut
         if (CONFIG.serverName) {
             document.getElementById('serverName').textContent = CONFIG.serverName;
         }
         
-        // Appliquer les couleurs personnalisÈes si dÈfinies
+        // Appliquer les couleurs personnalis√©es si d√©finies
         if (CONFIG.accentColor) {
             document.documentElement.style.setProperty('--accent-color', CONFIG.accentColor);
         }
         
-        console.log('Configuration chargÈe:', CONFIG);
+        console.log('Configuration charg√©e:', CONFIG);
     }
 }
 
-// Charger les rËgles du serveur
+// Charger les fondateurs
+function loadFounders() {
+    const foundersList = document.getElementById('foundersList');
+    
+    if (typeof CONFIG !== 'undefined' && CONFIG.founders && CONFIG.founders.length > 0) {
+        foundersList.innerHTML = '';
+        CONFIG.founders.forEach(founder => {
+            const founderDiv = document.createElement('div');
+            founderDiv.className = 'founder-item';
+            
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'founder-name';
+            nameSpan.textContent = founder.name;
+            
+            const roleSpan = document.createElement('span');
+            roleSpan.className = 'founder-role';
+            roleSpan.textContent = founder.role || 'Fondateur';
+            
+            founderDiv.appendChild(nameSpan);
+            founderDiv.appendChild(roleSpan);
+            foundersList.appendChild(founderDiv);
+        });
+    } else {
+        // Valeurs par d√©faut
+        foundersList.innerHTML = '<div class="founder-item"><span class="founder-name">Fondateur 1</span><span class="founder-role">Cr√©ateur</span></div>';
+    }
+}
+
+// Charger les r√®gles du serveur
 function loadRules() {
     const rulesList = document.getElementById('rulesList');
     
@@ -161,6 +186,60 @@ function loadRules() {
     }
 }
 
+// Initialiser la musique
+function initMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
+    const musicIcon = document.getElementById('musicIcon');
+    const musicText = document.getElementById('musicText');
+    
+    if (!bgMusic || !musicBtn) return;
+    
+    // V√©rifier si la musique est activ√©e dans la config
+    if (typeof CONFIG !== 'undefined' && CONFIG.enableMusic) {
+        bgMusic.volume = CONFIG.musicVolume || 0.3;
+        
+        // Bouton de contr√¥le de la musique
+        musicBtn.addEventListener('click', function() {
+            if (musicPlaying) {
+                // Arr√™ter la musique
+                bgMusic.pause();
+                musicPlaying = false;
+                musicIcon.textContent = 'üîá';
+                musicText.textContent = 'Musique OFF';
+                musicBtn.classList.remove('playing');
+            } else {
+                // Jouer la musique
+                bgMusic.play().then(() => {
+                    musicPlaying = true;
+                    musicIcon.textContent = 'üîä';
+                    musicText.textContent = 'Musique ON';
+                    musicBtn.classList.add('playing');
+                }).catch(e => {
+                    console.log('Impossible de jouer la musique:', e);
+                    alert('Cliquez sur le bouton pour activer la musique !');
+                });
+            }
+        });
+        
+        // Tenter de jouer automatiquement (peut √™tre bloqu√©)
+        bgMusic.play().then(() => {
+            musicPlaying = true;
+            musicIcon.textContent = 'üîä';
+            musicText.textContent = 'Musique ON';
+            musicBtn.classList.add('playing');
+        }).catch(e => {
+            console.log('Lecture automatique bloqu√©e. Cliquez sur le bouton pour activer la musique.');
+        });
+    } else {
+        // Cacher le contr√¥le si la musique est d√©sactiv√©e
+        const musicControl = document.getElementById('musicControl');
+        if (musicControl) {
+            musicControl.style.display = 'none';
+        }
+    }
+}
+
 // Animation du logo
 function animateLogo() {
     const logo = document.getElementById('logo');
@@ -170,7 +249,7 @@ function animateLogo() {
         logo.addEventListener('load', function() {
             logo.style.opacity = '1';
         });
-        // Image par dÈfaut si le logo ne charge pas
+        // Image par d√©faut si le logo ne charge pas
         logo.addEventListener('error', function() {
             logo.style.display = 'none';
         });
@@ -182,7 +261,7 @@ function simulateLoading() {
     console.log('Mode test : simulation du chargement');
     
     GameDetails(
-        'Serveur de Test',
+        CONFIG.serverName || 'Serveur de Test',
         'test.com',
         'gm_construct',
         32,
@@ -196,7 +275,7 @@ function simulateLoading() {
     const interval = setInterval(() => {
         if (current <= 0) {
             clearInterval(interval);
-            SetStatusChanged('Chargement terminÈ !');
+            SetStatusChanged('Chargement termin√© !');
             return;
         }
         
