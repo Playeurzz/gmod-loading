@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chargement du serveur...</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Arrière-plan avec overlay -->
+    <div class="background"></div>
+    <div class="overlay"></div>
+
+    <!-- Conteneur principal -->
+    <div class="container">
+        
+        <!-- Header avec logo -->
+        <div class="header">
+            <img src="images/logo.png" alt="Logo du serveur" class="logo" id="logo">
+            <h1 class="server-name" id="serverName">Chargement...</h1>
+        </div>
+
+        <!-- Informations de chargement -->
+        <div class="loading-info">
+            <div class="info-card">
+                <h2 class="map-name" id="mapName">Map : Chargement...</h2>
+                <div class="steam-info">
+                    <p id="steamName">Connexion...</p>
+                </div>
+            </div>
+
+            <!-- Barre de progression -->
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-shine"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressPercent">0%</span>
+                    <span id="filesDownloaded">0/0 fichiers</span>
+                </div>
+            </div>
+
+            <!-- Message de statut -->
+            <p class="status-message" id="statusMessage">Initialisation de la connexion...</p>
+        </div>
+
+        <!-- Règles du serveur -->
+        <div class="rules-container">
+            <h3>📋 Règles du serveur</h3>
+            <ul class="rules-list" id="rulesList">
+                <li>Chargement des règles...</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Connexion au serveur en cours...</p>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Musique de fond (optionnelle) -->
+    <!-- <audio id="bgMusic" loop>
+        <source src="music/background.mp3" type="audio/mpeg">
+    </audio> -->
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
