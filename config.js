@@ -10,7 +10,7 @@ const CONFIG = {
     // ═══════════════════════════════════════════════════════════
     
     // Nom de votre serveur (affiché en haut)
-    serverName: "Mon Serveur GMod",
+    serverName: "LePtitChaos RP",
     
     // Description du serveur (optionnel)
     serverDescription: "Le meilleur serveur Garry's Mod !",
@@ -67,10 +67,10 @@ const CONFIG = {
     showLinks: true,
     
     links: {
-        website: "https://monserveur.com",
-        discord: "https://discord.gg/votreserveur",
-        forum: "https://forum.monserveur.com",
-        shop: "https://boutique.monserveur.com"
+        website: "https://discord.gg/rVzN8DnsvD",
+        discord: "https://discord.gg/rVzN8DnsvD",
+        forum: "https://discord.gg/rVzN8DnsvD",
+        shop: "https://discord.gg/rVzN8DnsvD"
     },
     
     
@@ -117,4 +117,5 @@ if (CONFIG.debug) {
 // Export de la configuration pour les autres scripts
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
+
 }
