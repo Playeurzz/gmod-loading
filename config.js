@@ -10,26 +10,10 @@ const CONFIG = {
     // ═══════════════════════════════════════════════════════════
     
     // Nom de votre serveur (affiché en haut)
-    serverName: "LePtitChaos RP,
+    serverName: "LePtitChaos RP",
     
     // Description du serveur (optionnel)
     serverDescription: "Le meilleur serveur Garry's Mod !",
-    
-    
-    // ═══════════════════════════════════════════════════════════
-    // 👑 FONDATEURS DU SERVEUR
-    // ═══════════════════════════════════════════════════════════
-    
-    founders: [
-        {
-            name: "Zetrap",
-            role: "Fondateur"
-        },
-        {
-            name: "Gary Novack",
-            role: "Zetrap"
-        },
-    ],
     
     
     // ═══════════════════════════════════════════════════════════
@@ -48,15 +32,14 @@ const CONFIG = {
     // 🎵 MUSIQUE DE FOND
     // ═══════════════════════════════════════════════════════════
     
-    // ⚠️ IMPORTANT: Activer la musique (true/false)
+    // Activer la musique de fond (true/false)
     enableMusic: true,
     
     // Volume de la musique (0.0 à 1.0)
-    // 0.0 = muet, 0.5 = moyen, 1.0 = volume maximum
-    musicVolume: 0.9,
+    // 0.0 = muet, 1.0 = volume maximum
+    musicVolume: 0.8,
     
     // Chemin vers le fichier audio (MP3 recommandé)
-    // Placez votre fichier dans un dossier "music/"
     musicPath: "music/background.mp3",
     
     
@@ -72,8 +55,7 @@ const CONFIG = {
         "🎮 Jouez votre rôle correctement (No FailRP)",
         "🚫 Pas de prop abuse ou prop kill",
         "⚠️ Respectez les décisions des administrateurs",
-        "📢 Utilisez /report pour signaler un problème",
-        "🎯 Amusez-vous et profitez du serveur !"
+        "📢 Utilisez /report pour signaler un problème"
     ],
     
     
@@ -82,13 +64,13 @@ const CONFIG = {
     // ═══════════════════════════════════════════════════════════
     
     // Afficher les liens dans le footer (true/false)
-    showLinks: false,
+    showLinks: true,
     
     links: {
-        website: "https://monserveur.com",
-        discord: "https://discord.gg/votreserveur",
-        forum: "https://forum.monserveur.com",
-        shop: "https://boutique.monserveur.com"
+        website: "https://discord.gg/rVzN8DnsvD",
+        discord: "https://discord.gg/rVzN8DnsvD",
+        forum: "https://discord.gg/rVzN8DnsvD",
+        shop: "https://discord.gg/rVzN8DnsvD"
     },
     
     
@@ -135,5 +117,6 @@ if (CONFIG.debug) {
 // Export de la configuration pour les autres scripts
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
+
 }
 
