@@ -33,11 +33,11 @@ const CONFIG = {
     // ═══════════════════════════════════════════════════════════
     
     // Activer la musique de fond (true/false)
-    enableMusic: false,
+    enableMusic: true,
     
     // Volume de la musique (0.0 à 1.0)
     // 0.0 = muet, 1.0 = volume maximum
-    musicVolume: 0.3,
+    musicVolume: 0.8,
     
     // Chemin vers le fichier audio (MP3 recommandé)
     musicPath: "music/background.mp3",
@@ -119,3 +119,4 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
 
 }
+
