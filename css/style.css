@@ -46,6 +46,26 @@ body {
     height: 100%;
     padding: 30px;
     color: white;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scrollbar personnalisée pour le container */
+.container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.container::-webkit-scrollbar-thumb {
+    background: rgba(66, 153, 225, 0.5);
+    border-radius: 10px;
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+    background: rgba(66, 153, 225, 0.7);
 }
 
 /* Header avec logo */
@@ -289,6 +309,7 @@ body {
     text-align: center;
     animation: fadeInUp 1.5s ease-out;
     position: relative;
+    margin-top: 30px;
 }
 
 .footer p {
@@ -323,6 +344,10 @@ body {
 /* Contrôle musique */
 .music-control {
     margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
 }
 
 .music-btn {
@@ -353,6 +378,73 @@ body {
 
 #musicIcon {
     font-size: 1.3rem;
+}
+
+/* Contrôle du volume */
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.volume-icon {
+    font-size: 1.3rem;
+}
+
+.volume-slider {
+    width: 150px;
+    height: 6px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4299e1;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(66, 153, 225, 0.5);
+    transition: all 0.3s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(66, 153, 225, 0.8);
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #4299e1;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 10px rgba(66, 153, 225, 0.5);
+    transition: all 0.3s ease;
+}
+
+.volume-slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(66, 153, 225, 0.8);
+}
+
+.volume-value {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #4299e1;
+    min-width: 45px;
+    text-align: right;
 }
 
 /* Animations */
@@ -457,5 +549,9 @@ body {
     .founders-list {
         flex-direction: column;
         gap: 10px;
+    }
+    
+    .volume-slider {
+        width: 100px;
     }
 }
