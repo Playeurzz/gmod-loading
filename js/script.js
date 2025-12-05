@@ -189,13 +189,10 @@ function loadRules() {
 // Initialiser la musique
 function initMusic() {
     const bgMusic = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicBtn');
-    const musicIcon = document.getElementById('musicIcon');
-    const musicText = document.getElementById('musicText');
     const volumeSlider = document.getElementById('volumeSlider');
     const volumeValue = document.getElementById('volumeValue');
     
-    if (!bgMusic || !musicBtn) return;
+    if (!bgMusic) return;
     
     // Vérifier si la musique est activée dans la config
     if (typeof CONFIG !== 'undefined' && CONFIG.enableMusic) {
@@ -234,37 +231,16 @@ function initMusic() {
             console.log('Volume définitif:', volume);
         });
         
-        // Bouton de contrôle de la musique
-        musicBtn.addEventListener('click', function() {
-            if (musicPlaying) {
-                // Arrêter la musique
-                bgMusic.pause();
-                musicPlaying = false;
-                musicIcon.textContent = '🔇';
-                musicText.textContent = 'Musique OFF';
-                musicBtn.classList.remove('playing');
-            } else {
-                // Jouer la musique
-                bgMusic.play().then(() => {
-                    musicPlaying = true;
-                    musicIcon.textContent = '🔊';
-                    musicText.textContent = 'Musique ON';
-                    musicBtn.classList.add('playing');
-                }).catch(e => {
-                    console.log('Impossible de jouer la musique:', e);
-                    alert('Cliquez sur le bouton pour activer la musique !');
-                });
-            }
-        });
-        
-        // Tenter de jouer automatiquement (peut être bloqué)
+        // Tenter de jouer automatiquement (peut être bloqué par le navigateur)
         bgMusic.play().then(() => {
-            musicPlaying = true;
-            musicIcon.textContent = '🔊';
-            musicText.textContent = 'Musique ON';
-            musicBtn.classList.add('playing');
+            console.log('Musique lancée automatiquement');
         }).catch(e => {
-            console.log('Lecture automatique bloquée. Cliquez sur le bouton pour activer la musique.');
+            console.log('Lecture automatique bloquée. Bougez le curseur de volume pour démarrer la musique.');
+            // Démarrer la musique dès que l'utilisateur touche au volume
+            volumeSlider.addEventListener('input', function startMusic() {
+                bgMusic.play().catch(err => console.log('Erreur lecture:', err));
+                volumeSlider.removeEventListener('input', startMusic);
+            }, { once: true });
         });
     } else {
         // Cacher le contrôle si la musique est désactivée
