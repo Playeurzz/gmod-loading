@@ -206,10 +206,12 @@ function initMusic() {
         volumeValue.textContent = Math.round(initialVolume * 100) + '%';
         
         // Contrôle du volume avec le slider
-        volumeSlider.addEventListener('input', function() {
-            const volume = this.value / 100;
+        volumeSlider.addEventListener('input', function(e) {
+            const volume = parseFloat(this.value) / 100;
             bgMusic.volume = volume;
-            volumeValue.textContent = this.value + '%';
+            volumeValue.textContent = Math.round(this.value) + '%';
+            
+            console.log('Volume changé:', volume, 'Value:', this.value);
             
             // Changer l'icône selon le volume
             const volumeIcon = document.querySelector('.volume-icon');
@@ -222,6 +224,14 @@ function initMusic() {
                     volumeIcon.textContent = '🔊';
                 }
             }
+        });
+        
+        // Aussi gérer le changement (pour compatibilité)
+        volumeSlider.addEventListener('change', function(e) {
+            const volume = parseFloat(this.value) / 100;
+            bgMusic.volume = volume;
+            volumeValue.textContent = Math.round(this.value) + '%';
+            console.log('Volume définitif:', volume);
         });
         
         // Bouton de contrôle de la musique
