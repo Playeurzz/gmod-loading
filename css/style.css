@@ -310,6 +310,10 @@ body {
     animation: fadeInUp 1.5s ease-out;
     position: relative;
     margin-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .footer p {
@@ -345,16 +349,19 @@ body {
 .music-control {
     margin-top: 15px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 15px;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 600px;
 }
 
 .music-btn {
     background: rgba(66, 153, 225, 0.2);
     border: 2px solid #4299e1;
     color: white;
-    padding: 12px 30px;
+    padding: 12px 25px;
     border-radius: 25px;
     font-size: 1.1rem;
     cursor: pointer;
@@ -363,6 +370,7 @@ body {
     gap: 10px;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    white-space: nowrap;
 }
 
 .music-btn:hover {
@@ -384,26 +392,30 @@ body {
 .volume-control {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    padding: 10px 20px;
-    border-radius: 20px;
+    padding: 12px 20px;
+    border-radius: 25px;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    flex: 1;
+    max-width: 300px;
 }
 
 .volume-icon {
     font-size: 1.3rem;
+    min-width: 25px;
 }
 
 .volume-slider {
-    width: 150px;
+    flex: 1;
     height: 6px;
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.2);
     outline: none;
     cursor: pointer;
     -webkit-appearance: none;
+    appearance: none;
 }
 
 .volume-slider::-webkit-slider-thumb {
@@ -551,7 +563,13 @@ body {
         gap: 10px;
     }
     
-    .volume-slider {
-        width: 100px;
+    .music-control {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .volume-control {
+        max-width: 100%;
+        width: 100%;
     }
 }
