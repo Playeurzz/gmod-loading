@@ -1,102 +1,256 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chargement du serveur...</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <!-- Arrière-plan avec overlay -->
-    <div class="background"></div>
-    <div class="overlay"></div>
+// Variables globales
+let filesNeeded = 0;
+let filesTotal = 0;
+let musicPlaying = false;
 
-    <!-- Conteneur principal -->
-    <div class="container">
+// Fonction appelée par GMod lors du chargement
+function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
+    // Mise à jour du nom du serveur
+    document.getElementById('serverName').textContent = servername || CONFIG.serverName;
+    
+    // Mise à jour du nom de la map
+    document.getElementById('mapName').textContent = `Map : ${mapname || 'Chargement...'}`;
+    
+    // Si on a un Steam ID, récupérer le nom du joueur
+    if (steamid) {
+        document.getElementById('steamName').textContent = `Bienvenue, joueur !`;
+    }
+    
+    console.log('Détails du jeu reçus:', { servername, serverurl, mapname, maxplayers, steamid, gamemode });
+}
+
+// Fonction appelée lors du téléchargement des fichiers
+function DownloadingFile(fileName) {
+    const statusMessage = document.getElementById('statusMessage');
+    
+    // Raccourcir le nom du fichier s'il est trop long
+    const shortFileName = fileName.length > 50 
+        ? '...' + fileName.substring(fileName.length - 47) 
+        : fileName;
+    
+    statusMessage.textContent = `Téléchargement : ${shortFileName}`;
+    
+    console.log('Téléchargement du fichier:', fileName);
+}
+
+// Fonction appelée pour mettre à jour le statut
+function SetStatusChanged(status) {
+    const statusMessage = document.getElementById('statusMessage');
+    
+    // Messages personnalisés selon le statut
+    const statusMessages = {
+        'Sending client info...': 'Envoi des informations client...',
+        'Retrieving server info...': 'Récupération des informations du serveur...',
+        'Requesting spawn...': 'Demande d\'apparition...',
+        'Starting Lua...': 'Démarrage de Lua...',
+        'Parsing game info...': 'Analyse des informations de jeu...',
+        'Workshop Complete': 'Workshop terminé !',
+        'Client info sent!': 'Informations envoyées !'
+    };
+    
+    statusMessage.textContent = statusMessages[status] || status;
+    
+    console.log('Statut changé:', status);
+}
+
+// Fonction appelée pour mettre à jour les fichiers nécessaires
+function SetFilesNeeded(needed) {
+    filesNeeded = needed;
+    updateProgress();
+    
+    console.log('Fichiers nécessaires:', needed);
+}
+
+// Fonction appelée pour mettre à jour le total de fichiers
+function SetFilesTotal(total) {
+    filesTotal = total;
+    updateProgress();
+    
+    console.log('Total de fichiers:', total);
+}
+
+// Mise à jour de la barre de progression
+function updateProgress() {
+    const progressBar = document.querySelector('.progress-bar::before') || document.querySelector('.progress-bar');
+    const progressPercent = document.getElementById('progressPercent');
+    const filesDownloaded = document.getElementById('filesDownloaded');
+    
+    // Calculer le pourcentage
+    let percent = 0;
+    if (filesTotal > 0) {
+        const downloaded = filesTotal - filesNeeded;
+        percent = Math.floor((downloaded / filesTotal) * 100);
+    }
+    
+    // Mettre à jour l'affichage
+    progressPercent.textContent = `${percent}%`;
+    
+    // Mettre à jour le compteur de fichiers
+    const downloaded = Math.max(0, filesTotal - filesNeeded);
+    filesDownloaded.textContent = `${downloaded}/${filesTotal} fichiers`;
+    
+    // Animer la barre de progression
+    const progressBarElement = document.querySelector('.progress-bar');
+    if (progressBarElement) {
+        progressBarElement.style.setProperty('--progress', `${percent}%`);
+        // Utiliser un style inline pour la largeur
+        const beforeElement = document.createElement('style');
+        beforeElement.innerHTML = `.progress-bar::before { width: ${percent}% !important; }`;
+        document.head.appendChild(beforeElement);
+    }
+    
+    console.log('Progression:', percent + '%', `(${downloaded}/${filesTotal})`);
+}
+
+// Initialisation au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Loading screen initialisé');
+    
+    // Charger la configuration
+    loadConfiguration();
+    
+    // Charger les fondateurs
+    loadFounders();
+    
+    // Charger les règles depuis la config
+    loadRules();
+    
+    // Initialiser la musique
+    initMusic();
+    
+    // Animation du logo
+    animateLogo();
+    
+    // Simuler la progression pour les tests (à supprimer en production)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        simulateLoading();
+    }
+});
+
+// Charger la configuration
+function loadConfiguration() {
+    if (typeof CONFIG !== 'undefined') {
+        // Appliquer le nom du serveur par défaut
+        if (CONFIG.serverName) {
+            document.getElementById('serverName').textContent = CONFIG.serverName;
+        }
         
-        <!-- Header avec logo et fondateurs -->
-        <div class="header">
-            <img src="images/logo.png" alt="Logo du serveur" class="logo" id="logo">
-            <h1 class="server-name" id="serverName">Chargement...</h1>
+        // Appliquer les couleurs personnalisées si définies
+        if (CONFIG.accentColor) {
+            document.documentElement.style.setProperty('--accent-color', CONFIG.accentColor);
+        }
+        
+        console.log('Configuration chargée:', CONFIG);
+    }
+}
+
+// Charger les fondateurs
+function loadFounders() {
+    const foundersList = document.getElementById('foundersList');
+    
+    if (typeof CONFIG !== 'undefined' && CONFIG.founders && CONFIG.founders.length > 0) {
+        foundersList.innerHTML = '';
+        CONFIG.founders.forEach(founder => {
+            const founderDiv = document.createElement('div');
+            founderDiv.className = 'founder-item';
             
-            <!-- Section Fondateurs -->
-            <div class="founders-section">
-                <h3 class="founders-title">👑 Fondateurs Zetrap & Gary Novack</h3>
-                <div class="founders-list" id="foundersList">
-                    <!-- Sera rempli par config.js -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Section centrale avec infos et règles -->
-        <div class="main-content">
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'founder-name';
+            nameSpan.textContent = founder.name;
             
-            <!-- Informations de chargement -->
-            <div class="loading-info">
-                <div class="info-card">
-                    <h2 class="map-name" id="mapName">Map : Chargement...</h2>
-                    <div class="steam-info">
-                        <p id="steamName">Connexion...</p>
-                    </div>
-                </div>
-
-                <!-- Barre de progression -->
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-shine"></div>
-                    </div>
-                    <div class="progress-text">
-                        <span id="progressPercent">0%</span>
-                        <span id="filesDownloaded">0/0 fichiers</span>
-                    </div>
-                </div>
-
-                <!-- Message de statut -->
-                <p class="status-message" id="statusMessage">Initialisation de la connexion...</p>
-            </div>
-
-            <!-- Règles du serveur (REPOSITIONNÉES) -->
-            <div class="rules-container">
-                <h3>📋 Règles du Serveur</h3>
-                <ul class="rules-list" id="rulesList">
-                    <li>Chargement des règles...</li>
-                </ul>
-            </div>
-
-        </div>
-
-        <!-- Footer avec contrôle musique -->
-        <div class="footer">
-            <p>Connexion au serveur en cours...</p>
-            <div class="loading-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
+            const roleSpan = document.createElement('span');
+            roleSpan.className = 'founder-role';
+            roleSpan.textContent = founder.role || 'Fondateur';
             
-            <!-- Contrôle de la musique -->
-            <div class="music-control" id="musicControl">
-                <button class="music-btn" id="musicBtn">
-                    <span id="musicIcon">🔊</span>
-                    <span id="musicText">Musique</span>
-                </button>
-                <div class="volume-control">
-                    <span class="volume-icon">🔉</span>
-                    <input type="range" id="volumeSlider" min="0" max="100" value="30" class="volume-slider">
-                    <span class="volume-value" id="volumeValue">30%</span>
-                </div>
-            </div>
-        </div>
+            founderDiv.appendChild(nameSpan);
+            founderDiv.appendChild(roleSpan);
+            foundersList.appendChild(founderDiv);
+        });
+    } else {
+        // Valeurs par défaut
+        foundersList.innerHTML = '<div class="founder-item"><span class="founder-name">Fondateur 1</span><span class="founder-role">Créateur</span></div>';
+    }
+}
 
-    </div>
+// Charger les règles du serveur
+function loadRules() {
+    const rulesList = document.getElementById('rulesList');
+    
+    if (typeof CONFIG !== 'undefined' && CONFIG.rules && CONFIG.rules.length > 0) {
+        rulesList.innerHTML = '';
+        CONFIG.rules.forEach(rule => {
+            const li = document.createElement('li');
+            li.textContent = rule;
+            rulesList.appendChild(li);
+        });
+    }
+}
 
-    <!-- Musique de fond -->
-    <audio id="bgMusic" loop>
-        <source src="music/background.mp3" type="audio/mpeg">
-    </audio>
+// Initialiser la musique
+function initMusic() {
+    const bgMusic = document.getElementById('bgMusic');
+    
+    if (!bgMusic) return;
+    
+    // Vérifier si la musique est activée dans la config
+    if (typeof CONFIG !== 'undefined' && CONFIG.enableMusic) {
+        // Définir le volume depuis la config
+        const initialVolume = CONFIG.musicVolume || 0.3;
+        bgMusic.volume = initialVolume;
+        
+        // Tenter de jouer automatiquement
+        bgMusic.play().then(() => {
+            console.log('Musique lancée automatiquement à ' + (initialVolume * 100) + '%');
+        }).catch(e => {
+            console.log('Lecture automatique bloquée par le navigateur.');
+        });
+    }
+}
 
-    <!-- Scripts -->
-    <script src="config.js"></script>
-    <script src="js/script.js"></script>
-</body>
-</html>
+// Animation du logo
+function animateLogo() {
+    const logo = document.getElementById('logo');
+    if (logo && logo.complete) {
+        logo.style.opacity = '1';
+    } else if (logo) {
+        logo.addEventListener('load', function() {
+            logo.style.opacity = '1';
+        });
+        // Image par défaut si le logo ne charge pas
+        logo.addEventListener('error', function() {
+            logo.style.display = 'none';
+        });
+    }
+}
+
+// Simulation de chargement pour les tests
+function simulateLoading() {
+    console.log('Mode test : simulation du chargement');
+    
+    GameDetails(
+        CONFIG.serverName || 'Serveur de Test',
+        'test.com',
+        'gm_construct',
+        32,
+        'STEAM_0:1:12345678',
+        'sandbox'
+    );
+    
+    SetFilesTotal(100);
+    
+    let current = 100;
+    const interval = setInterval(() => {
+        if (current <= 0) {
+            clearInterval(interval);
+            SetStatusChanged('Chargement terminé !');
+            return;
+        }
+        
+        current -= Math.floor(Math.random() * 5) + 1;
+        SetFilesNeeded(Math.max(0, current));
+        
+        if (Math.random() > 0.7) {
+            DownloadingFile(`materials/models/test_${current}.vtf`);
+        }
+    }, 200);
+}
