@@ -1,7 +1,6 @@
 // Variables globales
 let filesNeeded = 0;
 let filesTotal = 0;
-let musicPlaying = false;
 
 // Fonction appelée par GMod lors du chargement
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
@@ -71,7 +70,6 @@ function SetFilesTotal(total) {
 
 // Mise à jour de la barre de progression
 function updateProgress() {
-    const progressBar = document.querySelector('.progress-bar::before') || document.querySelector('.progress-bar');
     const progressPercent = document.getElementById('progressPercent');
     const filesDownloaded = document.getElementById('filesDownloaded');
     
@@ -90,14 +88,9 @@ function updateProgress() {
     filesDownloaded.textContent = `${downloaded}/${filesTotal} fichiers`;
     
     // Animer la barre de progression
-    const progressBarElement = document.querySelector('.progress-bar');
-    if (progressBarElement) {
-        progressBarElement.style.setProperty('--progress', `${percent}%`);
-        // Utiliser un style inline pour la largeur
-        const beforeElement = document.createElement('style');
-        beforeElement.innerHTML = `.progress-bar::before { width: ${percent}% !important; }`;
-        document.head.appendChild(beforeElement);
-    }
+    const style = document.createElement('style');
+    style.innerHTML = `.progress-bar::before { width: ${percent}% !important; }`;
+    document.head.appendChild(style);
     
     console.log('Progression:', percent + '%', `(${downloaded}/${filesTotal})`);
 }
@@ -189,65 +182,28 @@ function loadRules() {
 // Initialiser la musique
 function initMusic() {
     const bgMusic = document.getElementById('bgMusic');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const volumeValue = document.getElementById('volumeValue');
     
-    if (!bgMusic) return;
+    if (!bgMusic) {
+        console.log('Élément audio non trouvé');
+        return;
+    }
     
     // Vérifier si la musique est activée dans la config
     if (typeof CONFIG !== 'undefined' && CONFIG.enableMusic) {
-        // Définir le volume initial
+        // Définir le volume depuis la config
         const initialVolume = CONFIG.musicVolume || 0.3;
         bgMusic.volume = initialVolume;
-        volumeSlider.value = initialVolume * 100;
-        volumeValue.textContent = Math.round(initialVolume * 100) + '%';
         
-        // Contrôle du volume avec le slider
-        volumeSlider.addEventListener('input', function(e) {
-            const volume = parseFloat(this.value) / 100;
-            bgMusic.volume = volume;
-            volumeValue.textContent = Math.round(this.value) + '%';
-            
-            console.log('Volume changé:', volume, 'Value:', this.value);
-            
-            // Changer l'icône selon le volume
-            const volumeIcon = document.querySelector('.volume-icon');
-            if (volumeIcon) {
-                if (volume === 0) {
-                    volumeIcon.textContent = '🔇';
-                } else if (volume < 0.5) {
-                    volumeIcon.textContent = '🔉';
-                } else {
-                    volumeIcon.textContent = '🔊';
-                }
-            }
-        });
+        console.log('Volume de la musique défini à:', (initialVolume * 100) + '%');
         
-        // Aussi gérer le changement (pour compatibilité)
-        volumeSlider.addEventListener('change', function(e) {
-            const volume = parseFloat(this.value) / 100;
-            bgMusic.volume = volume;
-            volumeValue.textContent = Math.round(this.value) + '%';
-            console.log('Volume définitif:', volume);
-        });
-        
-        // Tenter de jouer automatiquement (peut être bloqué par le navigateur)
+        // Tenter de jouer automatiquement
         bgMusic.play().then(() => {
             console.log('Musique lancée automatiquement');
         }).catch(e => {
-            console.log('Lecture automatique bloquée. Bougez le curseur de volume pour démarrer la musique.');
-            // Démarrer la musique dès que l'utilisateur touche au volume
-            volumeSlider.addEventListener('input', function startMusic() {
-                bgMusic.play().catch(err => console.log('Erreur lecture:', err));
-                volumeSlider.removeEventListener('input', startMusic);
-            }, { once: true });
+            console.log('Lecture automatique bloquée par le navigateur:', e.message);
         });
     } else {
-        // Cacher le contrôle si la musique est désactivée
-        const musicControl = document.getElementById('musicControl');
-        if (musicControl) {
-            musicControl.style.display = 'none';
-        }
+        console.log('Musique désactivée dans la configuration');
     }
 }
 
@@ -263,6 +219,7 @@ function animateLogo() {
         // Image par défaut si le logo ne charge pas
         logo.addEventListener('error', function() {
             logo.style.display = 'none';
+            console.log('Erreur de chargement du logo');
         });
     }
 }
