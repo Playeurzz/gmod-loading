@@ -37,7 +37,7 @@ const CONFIG = {
     
     // Volume de la musique (0.0 à 1.0)
     // 0.0 = muet, 1.0 = volume maximum
-    musicVolume: 0.2,
+    musicVolume: 0.4,
     
     // Chemin vers le fichier audio (MP3 recommandé)
     musicPath: "music/background.mp3",
@@ -119,6 +119,7 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
 
 }
+
 
 
 
