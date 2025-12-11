@@ -54,7 +54,7 @@ const CONFIG = {
     
     // Volume de la musique (0.0 à 1.0)
     // 0.0 = muet, 0.5 = moyen, 1.0 = volume maximum
-    musicVolume: 0.3,
+    musicVolume: 0.1,
     
     // Chemin vers le fichier audio (MP3 recommandé)
     // Placez votre fichier dans un dossier "music/"
@@ -137,4 +137,5 @@ if (CONFIG.debug) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;
 }
+
 
